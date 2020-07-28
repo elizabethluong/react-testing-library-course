@@ -19,7 +19,9 @@ class FavoriteNumber extends React.Component {
           value={number}
           onChange={this.handleChange}
         />
-        {isValid ? null : <div role="error-message">The number is invalid</div>}
+        {isValid ? null : (
+          <div role="error-message">The number is invalid</div>
+        )}
       </div>
     )
   }

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/extend-expect'
 import React from 'react'
 // 🐨 you'll need to import the fireEvent utility from react-testing-library
 import {render} from '@testing-library/react'
-import { FavoriteNumber } from '../favorite-number'
+import {FavoriteNumber} from '../favorite-number'
 import user from '@testing-library/user-event'
 
 test('entering an invalid value shows an error message', () => {
