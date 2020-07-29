@@ -1,9 +1,7 @@
 // these should normally be in your jest setupTestFrameworkScriptFile
-import 'react-testing-library/cleanup-after-each'
-import 'jest-dom/extend-expect'
-
+import '@testing-library/jest-dom/extend-expect'
 import React from 'react'
-import {render, fireEvent} from 'react-testing-library'
+import {render, fireEvent} from '@testing-library/react'
 import {reportError as mockReportError} from '../api'
 import {ErrorBoundary} from '../error-boundary'
 
@@ -20,8 +18,17 @@ beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {})
 })
 
-afterEach(() => {
+afterAll(() => { 
   console.error.mockRestore()
+  console.error('hi')
+})
+
+afterEach(() => {
+  jest.clearAllMocks()
+})
+
+beforeAll(() => { 
+  jest.spyOn(console, 'error').mockImplementation(() => { })
 })
 
 function Bomb({shouldThrow}) {
@@ -33,7 +40,8 @@ function Bomb({shouldThrow}) {
 }
 
 test('calls reportError and renders that there was a problem', () => {
-  const {container, rerender, getByText} = render(
+  mockReportError.mockResolvedValueOnce({success: true})
+  const {container, rerender, getByText, getByRole, queryByRole, queryByText} = render(
     <ErrorBoundary>
       <Bomb />
     </ErrorBoundary>,
@@ -50,7 +58,7 @@ test('calls reportError and renders that there was a problem', () => {
   const info = {componentStack: expect.stringContaining('Bomb')}
   expect(mockReportError).toHaveBeenCalledWith(error, info)
 
-  expect(container).toHaveTextContent('There was a problem')
+  expect(getByRole('alert').textContent).toMatchInlineSnapshot('"There was a problem."')
 
   // by mocking out console.error we may inadvertantly be missing out on logs
   // in the future that could be important, so let's reduce that liklihood by
@@ -70,5 +78,6 @@ test('calls reportError and renders that there was a problem', () => {
 
   expect(mockReportError).not.toHaveBeenCalled()
   expect(console.error).not.toHaveBeenCalled()
-  expect(container).not.toHaveTextContent('There was a problem')
+  expect(queryByRole('alert')).not.toBeInTheDocument()
+  expect(queryByText(/try again/i)).not.toBeInTheDocument()
 })
