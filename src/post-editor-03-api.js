@@ -1,23 +1,20 @@
 import React from 'react'
 import {savePost} from './api'
 
-class Editor extends React.Component {
-  state = {isSaving: false}
-  handleSubmit = e => {
+function Editor() {
+  const [isSaving, setIsSaving] = React.useState(false)
+  function handleSubmit(e) {
     e.preventDefault()
-    const {title, content, tags} = e.target.elements
-    const newPost = {
+    const { title, content, tags} = e.target.elements
+    setIsSaving(true)
+    savePost({
       title: title.value,
       content: content.value,
-      tags: tags.value.split(',').map(t => t.trim()),
-      authorId: this.props.user.id,
-    }
-    this.setState({isSaving: true})
-    savePost(newPost)
+      tags: tags.value.split(',').map(t => t.trim())
+    })
   }
-  render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <label htmlFor="title-input">Title</label>
         <input id="title-input" name="title" />
 
@@ -27,12 +24,11 @@ class Editor extends React.Component {
         <label htmlFor="tags-input">Tags</label>
         <input id="tags-input" name="tags" />
 
-        <button type="submit" disabled={this.state.isSaving}>
+        <button type="submit" disabled={isSaving}>
           Submit
         </button>
       </form>
     )
   }
-}
 
 export {Editor}
