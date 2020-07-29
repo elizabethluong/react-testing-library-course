@@ -17,13 +17,18 @@ jest.mock('../api')
 test('renders a form with title, content, tags, and a submit button', () => {
   // 🐨 pass a fake user (an object with an ID) to the editor as a prop
   mockSavePost.mockResolvedValueOnce()
-  const {getByLabelText, getByText} = render(<Editor />)
+  const { getByLabelText, getByText } = render(<Editor />)
+  const fakePost = {
+    title: 'test title',
+    content: 'test content',
+    tags: ['tag1', 'tag2'],
+  }
 
   // 🐨 set the value of each of these fields
-  getByLabelText(/title/i).value = 'test title'
-  getByLabelText(/content/i).value = 'test content'
+  getByLabelText(/title/i).value = fakePost.title
+  getByLabelText(/content/i).value = fakePost.content
   // 💯 tags should be a comma-separated list of values here
-  getByLabelText(/tags/i).value = 'tag1, tag2'
+  getByLabelText(/tags/i).value = fakePost.tags.join(',')
   const submitButton = getByText(/submit/i)
 
   fireEvent.click(submitButton)
