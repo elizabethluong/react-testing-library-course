@@ -1,21 +1,20 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {loadGreeting} from './api'
 
-class GreetingLoader extends Component {
-  inputRef = React.createRef()
-  state = {greeting: ''}
-  loadGreetingForInput = async e => {
+function GreetingLoader() { 
+  const [greeting, setGreeting] = React.useState('')
+  async function loadGreetingForInput(e) { 
     e.preventDefault()
-    const {data} = await loadGreeting(this.inputRef.current.value)
-    this.setState({greeting: data.greeting})
+    const { data } = await loadGreeting(e.target.elements.name.value)
+    setGreeting(data.greeting)
   }
-  render() {
+ {
     return (
-      <form onSubmit={this.loadGreetingForInput}>
+      <form onSubmit={loadGreetingForInput}>
         <label htmlFor="name">Name</label>
-        <input id="name" ref={this.inputRef} />
+        <input id="name" />
         <button type="submit">Load Greeting</button>
-        <div data-testid="greeting">{this.state.greeting}</div>
+        <div data-testid="greeting">{greeting}</div>
       </form>
     )
   }

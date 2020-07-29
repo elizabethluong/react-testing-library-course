@@ -26,7 +26,6 @@ import '@testing-library/jest-dom/extend-expect'
 test('renders a number input with a label "Favorite Number"', () => {
   // 🐨 assert the input type attribute is a number
   const {getByLabelText, debug} = render(<FavoriteNumber />)
-  const input = getByLabelText(/favorite Number/i) //replace string with regex to ignore casing as end user doesn't care
+  const input = getByLabelText(/favorite number/i) //replace string with regex to ignore casing as end user doesn't care
   expect(input).toHaveAttribute('type', 'number')
-  debug(input)
 })
