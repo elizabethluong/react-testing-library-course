@@ -1,7 +1,7 @@
 import React from 'react'
 import {savePost} from './api'
 
-function Editor() {
+function Editor({user}) {
   const [isSaving, setIsSaving] = React.useState(false)
   function handleSubmit(e) {
     e.preventDefault()
@@ -10,7 +10,8 @@ function Editor() {
     savePost({
       title: title.value,
       content: content.value,
-      tags: tags.value.split(',').map(t => t.trim())
+      tags: tags.value.split(',').map(t => t.trim()),
+      authorId: user.id
     })
   }
     return (

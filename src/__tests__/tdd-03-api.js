@@ -17,7 +17,8 @@ jest.mock('../api')
 test('renders a form with title, content, tags, and a submit button', () => {
   // 🐨 pass a fake user (an object with an ID) to the editor as a prop
   mockSavePost.mockResolvedValueOnce()
-  const { getByLabelText, getByText } = render(<Editor />)
+  const fakeUser = {id: 'user-1'}
+  const { getByLabelText, getByText } = render(<Editor user={fakeUser}/>)
   const fakePost = {
     title: 'test title',
     content: 'test content',
@@ -32,17 +33,11 @@ test('renders a form with title, content, tags, and a submit button', () => {
   const submitButton = getByText(/submit/i)
 
   fireEvent.click(submitButton)
-
   expect(submitButton).toBeDisabled()
-
-
   // and was called with the fake post data (title, content, and tags) and the authorId
   expect(mockSavePost).toHaveBeenCalledWith({
-  title: 'test title',
-  content: 'test content',
-  // 💯 tags should be an array of values here.
-  tags: ['tag1', 'tag2']
-  })
-    // 🐨 assert that the mock `savePost` function was called once
-    expect(mockSavePost).toHaveBeenCalledTimes(1)
+    ...fakePost,
+    authorId: fakeUser.id,
+  })    // 🐨 assert that the mock `savePost` function was called once
+  expect(mockSavePost).toHaveBeenCalledTimes(1)
 })
