@@ -1,11 +1,9 @@
 // these should normally be in your jest setupTestFrameworkScriptFile
-import 'jest-dom/extend-expect'
-import 'react-testing-library/cleanup-after-each'
-
+import '@testing-library/jest-dom/extend-expect'
 // 0⃣ 🐨 you'll need these:
-// import React from 'react'
-// import {render, fireEvent} from 'react-testing-library'
-// import {HiddenMessage} from '../hidden-message'
+import React from 'react'
+import {render, fireEvent, wait} from '@testing-library/react'
+import {HiddenMessage} from '../hidden-message'
 
 // Our component uses a react animation library called react-transition-group.
 // By its nature, this library does some interesting things to keep an element
@@ -21,37 +19,35 @@ import 'react-testing-library/cleanup-after-each'
 // 💯 jest.mock('react-transition-group', () => { /* return the mock object */ })
 // 📖 https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options
 
-test('shows hidden message when toggle is clicked', () => {
-  // 1⃣ 🐨 render the HiddenMessage component with any message you want
-  //
-  // 2⃣ 🐨 get the toggle button
-  // 💯 (use getByText)
-  //
-  // 3⃣ 🐨 assert that the text you want to render is not in the document
-  // 💯 (use `queryByText` and `not.toBeInTheDocument`)
-  // 📖 https://github.com/gnapse/jest-dom#tobeinthedocument
-  //
-  // 4⃣ 🐨 Use `fireEvent` to click on the button:
-  // 📖 https://github.com/kentcdodds/react-testing-library/blob/b18ff5b96210a887e784b9f53bd886e11b6ed5e0/README.md#fireeventnode-htmlelement-event-event
-  //
-  // 5⃣ 🐨 assert that your message is in the docuemnt
-  //
-  // 6⃣ 🐨 click on the button again
-  //
-  // 8⃣ 🐨 assert that your message is not in the docuemnt anymore
+
+
+// 🐨 uncommment to mock annimation library for faster tests and remove async await wait
+jest.mock('react-transition-group', () => { 
+  return {
+    CSSTransition: props => (props.in ? props.children: null),
+  }
 })
 
-//////// Elaboration & Feedback /////////
-// When you've finished with the exercises:
-// 1. Copy the URL below into your browser and fill out the form
-// 2. remove the `.skip` from the test below
-// 3. Change submitted from `false` to `true`
-// 4. And you're all done!
-/*
-http://ws.kcd.im/?ws=react-testing-library-course&e=mock-component&em=
-*/
-test.skip('I submitted my elaboration and feedback', () => {
-  const submitted = false // change this when you've submitted!
-  expect(submitted).toBe(true)
+test('shows hidden message when toggle is clicked', // async
+  () => {
+  // 1⃣ 🐨 render the HiddenMessage component with any message you want
+  const myMessage = 'Hello World'
+  const {getByText, queryByText} = render(
+    <HiddenMessage>{myMessage}</HiddenMessage>,
+  )  // 2⃣ 🐨 get the toggle button
+  // 💯 (use getByText)
+  const toggleButton = getByText(/toggle/i)
+  // 3⃣ 🐨 assert that the text you want to render is not in the document
+  // 💯 (use `queryByText` and `not.toBeInTheDocument`)
+  expect(queryByText(myMessage)).not.toBeInTheDocument()
+  // 4⃣ 🐨 Use `fireEvent` to click on the button:
+  fireEvent.click(toggleButton)
+  // 📖 https://github.com/kentcdodds/react-testing-library/blob/b18ff5b96210a887e784b9f53bd886e11b6ed5e0/README.md#fireeventnode-htmlelement-event-event
+  // 5⃣ 🐨 assert that your message is in the docuemnt
+  expect(getByText(myMessage)).toBeInTheDocument()
+  // 6⃣ 🐨 click on the button again
+  fireEvent.click(toggleButton)
+  // 8⃣ 🐨 assert that your message is not in the document anymore
+  // await wait(() => expect(queryByText(myMessage)).not.toBeInTheDocument()) // without await async / await test will fail as animation hasn't completed yet however, this makes our test longer than we want to so instead, we can mock 'react-transition-group' line 25-29
+
 })
-////////////////////////////////
