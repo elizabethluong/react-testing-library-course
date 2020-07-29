@@ -1,7 +1,6 @@
 import React from 'react'
 
-class Editor extends React.Component {
-  render() {
+function Editor() { 
     return (
       <form>
         <label htmlFor="title-input">Title</label>
@@ -17,6 +16,5 @@ class Editor extends React.Component {
       </form>
     )
   }
-}
 
 export {Editor}
